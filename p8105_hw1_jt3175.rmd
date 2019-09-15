@@ -26,7 +26,7 @@ Below is code to create a simple data frame containing the following:
 *   a factor vector of length 8, with 3 different factor “levels”
 
 ```{r df_create}
-simple_df = tibble(
+simple_df1 = tibble(
   sample_norm = rnorm(8),
   gr_th_0 = sample_norm > 0,
   vec_char = c("One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight"),
@@ -37,18 +37,18 @@ simple_df = tibble(
 If I attempt to take the mean of each variable in the dataframe, we obtain values for the numeric and logical variables, but see an error for the character and factor variables. 
 
 ```{r}
-mean(pull(simple_df, sample_norm))
-mean(pull(simple_df, gr_th_0))
-mean(pull(simple_df, vec_char))
-mean(pull(simple_df, vec_factor))
+mean(pull(simple_df1, sample_norm))
+mean(pull(simple_df1, gr_th_0))
+mean(pull(simple_df1, vec_char))
+mean(pull(simple_df1, vec_factor))
 ```
 
 The below code chunk applies the _as.numeric_ function to the logical, character, and factor variables. We see that both logical and factor variables can be converted to numeric, though the mean of a logical variable can be taken without conversion. Character variables are unable to be converted to numeric this way, and we are still unable to take the mean. When we use the _as.numeric_ function on the factor variable, each element assumes the value of it's level, which is not particularly helpful for analysis in most cases. This shows that, even though I have typed numbers in my character variable, R does not understand the meaning and cannot evaluate them.
 
 ```{r, eval=FALSE}
-mean(as.numeric(pull(simple_df, gr_th_0)))
-mean(as.numeric(pull(simple_df, vec_char))) #this gives a warning and does not take the mean
-mean(as.numeric(pull(simple_df, vec_factor)))
+mean(as.numeric(pull(simple_df1, gr_th_0)))
+mean(as.numeric(pull(simple_df1, vec_char))) #this gives a warning and does not take the mean
+mean(as.numeric(pull(simple_df1, vec_factor)))
 ```
 
 
@@ -63,14 +63,14 @@ In a second code chunk:
 We see a key difference in logical versus numeric versus facor variables. Logical to numeric converts _true_ to 1 and _false_ to 0. However, logical to factor converts _true_ to 1 and _false_ to 2.
 
 ```{r}
-log_to_num = as.numeric(pull(simple_df, gr_th_0))
-rs_x_log_to_num = log_to_num * pull(simple_df, sample_norm)
+log_to_num = as.numeric(pull(simple_df1, gr_th_0))
+rs_x_log_to_num = log_to_num * pull(simple_df1, sample_norm)
 
-log_to_fac = as.factor(pull(simple_df, gr_th_0))
-rs_x_log_to_fac = log_to_fac * pull(simple_df, sample_norm) # Factor variables are categorical, so this won't work
+log_to_fac = as.factor(pull(simple_df1, gr_th_0))
+rs_x_log_to_fac = log_to_fac * pull(simple_df1, sample_norm) # Factor variables are categorical, so this won't work
 
 log_to_fac_to_num = as.numeric(log_to_fac)
-rs_x_log_to_fac_to_num = log_to_fac_to_num * pull(simple_df, sample_norm)
+rs_x_log_to_fac_to_num = log_to_fac_to_num * pull(simple_df1, sample_norm)
 
 log_to_num
 log_to_fac
@@ -79,4 +79,34 @@ log_to_fac_to_num
 rs_x_log_to_num
 rs_x_log_to_fac_to_num
 ```
+
+## Problem 2
+
+Create a data frame comprised of:
+x: a random sample of size 500 from a standard Normal distribution
+y: a random sample of size 500 from a standard Normal distribution
+A logical vector indicating whether x + y > 1
+A numeric vector created by coercing the above logical vector
+A factor vector created by coercing the above logical vector
+
+```{r}
+simple_df2 = tibble(
+  x = rnorm(500),
+  y = rnorm(500),
+  gr_th_1 = x + y > 1,
+  log_num = as.numeric(gr_th_1),
+  log_fac = as.factor(gr_th_1)
+)
+```
+
+The above dataframe contains `r ncol(simple_df2)` variables _(`r names(simple_df2)`)_ of `r nrow(simple_df2)` observations each. X and y are both normally distributed variables. X has a mean of `r mean(pull(simple_df2, x))`, median of `r median(pull(simple_df2, x))`, and standard deviation of `r sd(pull(simple_df2, x))`. The variable _gr_th_1_ represents whether x + y is greater than 1. There are `r sum(pull(simple_df2, gr_th_1))`/500 cases where x + y is greater than 1. 
+
+Make a scatterplot of y vs x; color points using the logical variable (adding color = ... inside of aes in your ggplot code should help). Make a second and third scatterplot that color points using the numeric and factor variables, respectively, and comment on the color scales.
+
+```{r yx_scatter}
+ggplot(simple_df2, aes(x = x, y = y, color=gr_th_1)) + geom_point()
+ggplot(simple_df2, aes(x = x, y = y, color=log_num)) + geom_point()
+ggplot(simple_df2, aes(x = x, y = y, color=log_fac)) + geom_point()
+```
+
 
