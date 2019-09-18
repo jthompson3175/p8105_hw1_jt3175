@@ -96,9 +96,15 @@ The above dataframe contains `r ncol(simple_df2)` variables _(`r names(simple_df
 Below are three scatterplots of y vs x. On the first, points are colored using the logical variable. The second and third scatterplots color points using the numeric and factor variables, respectively. Both the logical and factor color scales are binary (producing 2 solid colors). However, use of the numeric variable for coloring produces a gradient that ranges over the values (0 to 1), but only 2 colors are displayed in the scatterplot because we only have 2 values represented. 
 
 ```{r yx_scatter}
-ggplot(simple_df2, aes(x = x, y = y, color=gr_th_1)) + geom_point()
-ggplot(simple_df2, aes(x = x, y = y, color=log_num)) + geom_point()
-ggplot(simple_df2, aes(x = x, y = y, color=log_fac)) + geom_point()
+colored_logical = ggplot(simple_df2, aes(x = x, y = y, color=gr_th_1)) + geom_point()
+colored_numeric = ggplot(simple_df2, aes(x = x, y = y, color=log_num)) + geom_point()
+colored_factor = ggplot(simple_df2, aes(x = x, y = y, color=log_fac)) + geom_point()
+
+colored_logical
+colored_numeric
+colored_factor
+
+ggsave("colored_logical.pdf")
 ```
 
 
