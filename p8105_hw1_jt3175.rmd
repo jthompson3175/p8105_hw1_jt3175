@@ -34,20 +34,20 @@ simple_df1 = tibble(
 )
 ```
 
-If I attempt to take the mean of each variable in the dataframe, we obtain values for the numeric and logical variables, but see an error for the character and factor variables. 
+If I attempt to take the mean of each variable in the dataframe, we obtain values for the numeric and logical variables, but see an error and end up with NA for the character and factor variables. This is what we would expect, since you cannot perform mathematical operations on words. 
 
-```{r}
+```{r, warning = FALSE}
 mean(pull(simple_df1, sample_norm))
 mean(pull(simple_df1, gr_th_0))
 mean(pull(simple_df1, vec_char))
 mean(pull(simple_df1, vec_factor))
 ```
 
-The below code chunk applies the _as.numeric_ function to the logical, character, and factor variables. We see that both logical and factor variables can be converted to numeric, though the mean of a logical variable can be taken without conversion. Character variables are unable to be converted to numeric this way, and we are still unable to take the mean. When we use the _as.numeric_ function on the factor variable, each element assumes the value of it's level, which is not particularly helpful for analysis in most cases. This shows that, even though I have typed numbers in my character variable, R does not understand the meaning and cannot evaluate them.
+The below code chunk applies the _as.numeric_ function to the logical, character, and factor variables. We see that both logical and factor variables can be converted to numeric, though the mean of a logical variable could be taken without conversion as seen above. Character variables are unable to be converted to numeric this way. This shows that, even though I have typed numbers in my character variable, R does not understand the meaning and cannot evaluate them. When we use the _as.numeric_ function on the factor variable, each element assumes the value of it's level's index, which is not particularly helpful for analysis in most cases. 
 
 ```{r, eval=FALSE}
 as.numeric(pull(simple_df1, gr_th_0))
-as.numeric(pull(simple_df1, vec_char)) #this gives a warning
+as.numeric(pull(simple_df1, vec_char)) #this does not work
 as.numeric(pull(simple_df1, vec_factor))
 ```
 
@@ -59,7 +59,7 @@ The below code chunk tests three different scenarios:
 
 *   Convert the logical vector to a factor and then convert the result to numeric, and multiply the random sample by the result
 
-The second scenario does not work because factor variables are categorical, so multiplicaiton cannot be performed. We see a key difference in logical versus numeric versus facor variables. Logical to numeric converts _true_ to 1 and _false_ to 0. However, logical to factor converts _true_ to 1 and _false_ to 2.
+The second scenario does not work because factor variables are categorical, so multiplicaiton cannot be performed. We see a key difference in logical versus numeric versus facor variables. Logical to numeric converts _true_ to 1 and _false_ to 0. However, logical to factor converts _true_ to 1 and _false_ to 2 because of the way factors index the components.
 
 ```{r}
 log_to_num = as.numeric(pull(simple_df1, gr_th_0))
