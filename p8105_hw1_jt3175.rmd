@@ -11,15 +11,7 @@ library(tidyverse)
 
 ## Problem 1
 
-Below is code to create a simple data frame containing the following:
-
-*   a random sample of size 8 from a standard Normal distribution
-
-*   a logical vector indicating whether elements of the sample are greater than 0
-
-*   a character vector of length 8
-
-*   a factor vector of length 8, with 3 different factor “levels”
+Below is code to create a simple data frame containing a random sample of size 8 from a standard normal distribution, a logical vector indicating whether elements of the sample are greater than 0, a character vector of length 8, and a factor vector of length 8 with 3 different factor levels.
 
 ```{r df_create}
 simple_df1 = tibble(
@@ -30,7 +22,7 @@ simple_df1 = tibble(
 )
 ```
 
-If I attempt to take the mean of each variable in the dataframe, we obtain values for the numeric and logical variables, but see an error and end up with NA for the character and factor variables. This is what we would expect, since you cannot perform mathematical operations on words. 
+If I attempt to take the mean of each variable in the dataframe, I obtain values for the numeric and logical variables, but see an error and end up with NA for the character and factor variables. This is what we would expect, since you cannot perform mathematical operations on words. 
 
 ```{r, warning = FALSE}
 mean(pull(simple_df1, sample_norm))
@@ -39,7 +31,7 @@ mean(pull(simple_df1, vec_char))
 mean(pull(simple_df1, vec_factor))
 ```
 
-The below code chunk applies the _as.numeric_ function to the logical, character, and factor variables. We see that both logical and factor variables can be converted to numeric, though the mean of a logical variable could be taken without conversion as seen above. Character variables are unable to be converted to numeric this way. This shows that, even though I have typed numbers in my character variable, R does not understand the meaning and cannot evaluate them. When we use the _as.numeric_ function on the factor variable, each element assumes the value of it's level's index, which is not particularly helpful for analysis in most cases. 
+The below code chunk applies the _as.numeric_ function to the logical, character, and factor variables. We see that both logical and factor variables can be converted to numeric, though the mean of a logical variable could be taken without conversion as seen above. Character variables are unable to be converted to numeric this way. This shows that, even though I have typed numbers in my character variable, R does not understand the meaning and cannot evaluate them. When we use the _as.numeric_ function on the factor variable, each element assumes the value of it's level's index.
 
 ```{r, eval=FALSE}
 as.numeric(pull(simple_df1, gr_th_0))
@@ -49,15 +41,15 @@ as.numeric(pull(simple_df1, vec_factor))
 
 The below code chunk tests three different scenarios:
 
-*   Convert the logical vector to numeric, and multiply the random sample by the result
+1. Convert the logical vector to numeric, and multiply the random sample by the result
 
-*   Convert the logical vector to a factor, and multiply the random sample by the result
+2. Convert the logical vector to a factor, and multiply the random sample by the result
 
-*   Convert the logical vector to a factor and then convert the result to numeric, and multiply the random sample by the result
+3. Convert the logical vector to a factor and then convert the result to numeric, and multiply the random sample by the result
 
-The second scenario does not work because factor variables are categorical, so multiplicaiton cannot be performed. We see a key difference in logical versus numeric versus facor variables. Logical to numeric converts _true_ to 1 and _false_ to 0. However, logical to factor converts _true_ to 1 and _false_ to 2 because of the way factors index the components.
+The second scenario does not work because factor variables are categorical, so multiplicaiton cannot be performed. We see a key difference in logical versus numeric versus facor variables. Logical to numeric converts _true_ to 1 and _false_ to 0. However, logical to factor converts _true_ to 2 and _false_ to 1 because of the way factors index the components (alphabetically).
 
-```{r}
+```{r, warning = FALSE}
 log_to_num = as.numeric(pull(simple_df1, gr_th_0))
 rs_x_log_to_num = log_to_num * pull(simple_df1, sample_norm)
 
@@ -73,6 +65,7 @@ log_to_fac_to_num
 
 rs_x_log_to_num
 rs_x_log_to_fac_to_num
+rs_x_log_to_fac
 ```
 
 ## Problem 2
